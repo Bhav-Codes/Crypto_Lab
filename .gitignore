@@ -1,27 +1,26 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
+# C++ Compiled Files
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.a
 *.so
-.Python
-env/
-venv/
-ENV/
+*.dylib
+*.dll
+*.lib
+
+# Executables
+cryptolabx
+cryptolabx.exe
+
+# Build directories
 build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile.bak
 
 # IDEs
 .vscode/

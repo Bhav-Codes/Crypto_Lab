@@ -40,12 +40,14 @@ CryptoLabX_GroupXX/
 ├── docs/               # Documentation (Coming Soon)
 ├── tests/              # Unit tests (Coming Soon)
 ├── utils/              # Utility modules
-│   ├── __init__.py
-│   ├── logger.py       # Logging functionality
-│   └── file_analyzer.py # File analysis tools
-├── main.py             # Main application entry point
-├── README.md           # This file
-└── requirements.txt    # Python dependencies
+│   ├── logger.h        # Logger header
+│   ├── logger.cpp      # Logging functionality
+│   ├── file_analyzer.h # File analyzer header
+│   └── file_analyzer.cpp # File analysis tools
+├── main.cpp            # Main application entry point
+├── Makefile            # Makefile for compilation
+├── CMakeLists.txt      # CMake configuration
+└── README.md           # This file
 ```
 
 ## Future Modules
@@ -95,16 +97,37 @@ git clone <repository-url>
 cd CryptoLabX_GroupXX
 ```
 
-2. Install dependencies:
+2. Compile the project:
+
+**Using Make:**
 ```bash
-pip install -r requirements.txt
+make
+```
+
+**Using CMake:**
+```bash
+mkdir build
+cd build
+cmake ..
+make
 ```
 
 ## Usage
 
-Run the main application:
+**If compiled with Make:**
 ```bash
-python main.py
+./cryptolabx
+```
+
+**If compiled with CMake:**
+```bash
+cd build
+./cryptolabx
+```
+
+Or simply run:
+```bash
+make run
 ```
 
 ### Menu Options
@@ -126,15 +149,19 @@ The Analyze option allows you to:
   - Top 5 most frequent letters with percentages
 
 ## Requirements
-- Python 3.6 or higher
-- Standard Python libraries (no external dependencies required for Week 1)
+- C++ compiler with C++11 support (g++, clang++, or MSVC)
+- Make (for Makefile build) or CMake 3.10+ (for CMake build)
+- Standard C++ libraries (no external dependencies required for Week 1)
 
 ## Development Guidelines
-- Follow PEP 8 style guide for Python code
-- Write docstrings for all functions and classes
+- Follow C++ best practices and coding standards
+- Use header guards in all header files
+- Write clear comments and documentation
 - Maintain modular and reusable code
 - Test thoroughly before committing
 - Document all significant changes
+- Use proper memory management
+- Handle exceptions appropriately
 
 ## Activity Logging
 All user actions are automatically logged in `outputs/activity.log` with:
