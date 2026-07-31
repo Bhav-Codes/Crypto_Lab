@@ -1,0 +1,9 @@
+# CryptoLabX Requirements
+# Python 3.6 or higher required
+
+# No external dependencies required for Week 1
+# Future weeks may include:
+# numpy>=1.21.0
+# matplotlib>=3.4.0
+# cryptography>=3.4.0
+# pycryptodome>=3.10.0
