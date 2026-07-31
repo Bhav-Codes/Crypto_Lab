@@ -1,138 +1,152 @@
-/**
- * CryptoLabX - A Cryptanalysis Toolkit
- * Main entry point for the application
- */
+// CryptoLabX - A Cryptanalysis Toolkit
+// Simple and basic C++ implementation
 
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <limits>
-#include "utils/logger.h"
-#include "utils/file_analyzer.h"
+#include <ctime>
+using namespace std;
 
-class CryptoLabX {
-private:
-    Logger logger;
-    FileAnalyzer fileAnalyzer;
-    bool running;
+// Function to write to log file
+void writeLog(string action) {
+    ofstream logFile("outputs/activity.log", ios::app);
+    if (logFile.is_open()) {
+        time_t now = time(0);
+        tm* ltm = localtime(&now);
+        logFile << "[" << 1900 + ltm->tm_year << "-" 
+                << 1 + ltm->tm_mon << "-" << ltm->tm_mday << " "
+                << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec
+                << "] Action: " << action << endl;
+        logFile.close();
+    }
+}
 
-public:
-    CryptoLabX() : running(true) {}
+// Function to display menu
+void showMenu() {
+    cout << "\n==================================================\n";
+    cout << "        CryptoLabX - Cryptanalysis Toolkit\n";
+    cout << "==================================================\n";
+    cout << "1. Encrypt\n";
+    cout << "2. Decrypt\n";
+    cout << "3. Attack\n";
+    cout << "4. Analyze\n";
+    cout << "5. Exit\n";
+    cout << "==================================================\n";
+}
 
-    void displayMenu() {
-        std::cout << "\n" << std::string(50, '=') << std::endl;
-        std::cout << "        CryptoLabX - Cryptanalysis Toolkit" << std::endl;
-        std::cout << std::string(50, '=') << std::endl;
-        std::cout << "1. Encrypt" << std::endl;
-        std::cout << "2. Decrypt" << std::endl;
-        std::cout << "3. Attack" << std::endl;
-        std::cout << "4. Analyze" << std::endl;
-        std::cout << "5. Exit" << std::endl;
-        std::cout << std::string(50, '=') << std::endl;
+// Function to analyze a file
+void analyzeFile(string filename) {
+    ifstream file("datasets/" + filename);
+    if (!file.is_open()) {
+        cout << "Error: Cannot open file!\n";
+        return;
     }
 
-    void handleEncrypt() {
-        std::cout << "\n[Encrypt] Coming Soon..." << std::endl;
-        logger.log("Encrypt");
+    string content;
+    string line;
+    while (getline(file, line)) {
+        content += line + "\n";
     }
+    file.close();
 
-    void handleDecrypt() {
-        std::cout << "\n[Decrypt] Coming Soon..." << std::endl;
-        logger.log("Decrypt");
-    }
+    // Count characters, words, lines
+    int numChars = content.length();
+    int numWords = 0;
+    int numLines = 0;
+    int letterCount[26] = {0};
 
-    void handleAttack() {
-        std::cout << "\n[Attack] Coming Soon..." << std::endl;
-        logger.log("Attack");
-    }
-
-    void handleAnalyze() {
-        std::cout << "\n[Analyze] File Analysis" << std::endl;
-        logger.log("Analyze");
-
-        std::vector<std::string> files = fileAnalyzer.listDatasetFiles();
-
-        if (files.empty()) {
-            std::cout << "No text files found in datasets folder!" << std::endl;
-            return;
+    // Count words
+    for (int i = 0; i < numChars; i++) {
+        if (content[i] == ' ' || content[i] == '\n') {
+            numWords++;
         }
-
-        std::cout << "\nAvailable files:" << std::endl;
-        for (size_t i = 0; i < files.size(); i++) {
-            std::cout << i + 1 << ". " << files[i] << std::endl;
+        if (content[i] == '\n') {
+            numLines++;
         }
-
-        std::cout << "\nSelect a file number (or press 0 to cancel): ";
-        int choice;
-        std::cin >> choice;
-
-        // Clear input buffer
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-        if (choice > 0 && choice <= static_cast<int>(files.size())) {
-            std::string filePath = "datasets/" + files[choice - 1];
-            fileAnalyzer.analyzeFile(filePath);
-        } else if (choice != 0) {
-            std::cout << "Invalid selection!" << std::endl;
+        // Count letters
+        char c = content[i];
+        if (c >= 'a' && c <= 'z') {
+            letterCount[c - 'a']++;
+        } else if (c >= 'A' && c <= 'Z') {
+            letterCount[c - 'A']++;
         }
     }
+    if (numChars > 0) numWords++;
+    if (numLines == 0) numLines = 1;
 
-    void handleExit() {
-        std::cout << "\nThank you for using CryptoLabX!" << std::endl;
-        logger.log("Exit");
-        running = false;
-    }
+    // Display results
+    cout << "\n============================================================\n";
+    cout << "File Analysis: " << filename << endl;
+    cout << "============================================================\n";
+    cout << "Total Characters: " << numChars << endl;
+    cout << "Total Words: " << numWords << endl;
+    cout << "Total Lines: " << numLines << endl;
 
-    void run() {
-        std::cout << "Welcome to CryptoLabX!" << std::endl;
-
-        while (running) {
-            displayMenu();
-            std::cout << "\nEnter your choice (1-5): ";
-            
-            int choice;
-            std::cin >> choice;
-
-            // Handle invalid input
-            if (std::cin.fail()) {
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cout << "\nInvalid choice! Please select 1-5." << std::endl;
-                continue;
-            }
-
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-            switch (choice) {
-                case 1:
-                    handleEncrypt();
-                    break;
-                case 2:
-                    handleDecrypt();
-                    break;
-                case 3:
-                    handleAttack();
-                    break;
-                case 4:
-                    handleAnalyze();
-                    break;
-                case 5:
-                    handleExit();
-                    break;
-                default:
-                    std::cout << "\nInvalid choice! Please select 1-5." << std::endl;
-            }
+    cout << "\nLetter Frequency:\n";
+    cout << "------------------------------------------------------------\n";
+    for (int i = 0; i < 26; i++) {
+        if (letterCount[i] > 0) {
+            cout << (char)('A' + i) << ": " << letterCount[i] << "  ";
+            if ((i + 1) % 5 == 0) cout << endl;
         }
     }
-};
+    cout << "\n============================================================\n";
+}
 
 int main() {
-    try {
-        CryptoLabX app;
-        app.run();
-        return 0;
-    } catch (const std::exception& e) {
-        std::cerr << "\nAn error occurred: " << e.what() << std::endl;
-        return 1;
+    cout << "Welcome to CryptoLabX!\n";
+
+    int choice;
+    bool running = true;
+
+    while (running) {
+        showMenu();
+        cout << "\nEnter your choice (1-5): ";
+        cin >> choice;
+
+        if (choice == 1) {
+            cout << "\n[Encrypt] Coming Soon...\n";
+            writeLog("Encrypt");
+        }
+        else if (choice == 2) {
+            cout << "\n[Decrypt] Coming Soon...\n";
+            writeLog("Decrypt");
+        }
+        else if (choice == 3) {
+            cout << "\n[Attack] Coming Soon...\n";
+            writeLog("Attack");
+        }
+        else if (choice == 4) {
+            cout << "\n[Analyze] File Analysis\n";
+            writeLog("Analyze");
+            
+            cout << "\nAvailable files:\n";
+            cout << "1. sample1.txt\n";
+            cout << "2. sample2.txt\n";
+            cout << "3. sample3.txt\n";
+            cout << "4. sample4.txt\n";
+            cout << "5. sample5.txt\n";
+            
+            int fileChoice;
+            cout << "\nSelect a file number: ";
+            cin >> fileChoice;
+            
+            if (fileChoice >= 1 && fileChoice <= 5) {
+                string filename = "sample" + to_string(fileChoice) + ".txt";
+                analyzeFile(filename);
+            } else {
+                cout << "Invalid selection!\n";
+            }
+        }
+        else if (choice == 5) {
+            cout << "\nThank you for using CryptoLabX!\n";
+            writeLog("Exit");
+            running = false;
+        }
+        else {
+            cout << "\nInvalid choice! Please select 1-5.\n";
+        }
     }
+
+    return 0;
 }

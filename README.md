@@ -39,14 +39,8 @@ CryptoLabX_GroupXX/
 │   └── activity.log    # Activity log file (auto-generated)
 ├── docs/               # Documentation (Coming Soon)
 ├── tests/              # Unit tests (Coming Soon)
-├── utils/              # Utility modules
-│   ├── logger.h        # Logger header
-│   ├── logger.cpp      # Logging functionality
-│   ├── file_analyzer.h # File analyzer header
-│   └── file_analyzer.cpp # File analysis tools
-├── main.cpp            # Main application entry point
-├── Makefile            # Makefile for compilation
-├── CMakeLists.txt      # CMake configuration
+├── utils/              # Utility modules (Coming Soon)
+├── main.cpp            # Main application (single file)
 └── README.md           # This file
 ```
 
@@ -98,36 +92,21 @@ cd CryptoLabX_GroupXX
 ```
 
 2. Compile the project:
-
-**Using Make:**
 ```bash
-make
+g++ main.cpp -o cryptolabx
 ```
 
-**Using CMake:**
+Or with any C++ compiler:
 ```bash
-mkdir build
-cd build
-cmake ..
-make
+g++ -std=c++11 main.cpp -o cryptolabx
+clang++ main.cpp -o cryptolabx
 ```
 
 ## Usage
 
-**If compiled with Make:**
+Run the compiled program:
 ```bash
 ./cryptolabx
-```
-
-**If compiled with CMake:**
-```bash
-cd build
-./cryptolabx
-```
-
-Or simply run:
-```bash
-make run
 ```
 
 ### Menu Options
@@ -149,9 +128,8 @@ The Analyze option allows you to:
   - Top 5 most frequent letters with percentages
 
 ## Requirements
-- C++ compiler with C++11 support (g++, clang++, or MSVC)
-- Make (for Makefile build) or CMake 3.10+ (for CMake build)
-- Standard C++ libraries (no external dependencies required for Week 1)
+- C++ compiler (g++, clang++, or MSVC)
+- Standard C++ libraries only (no external dependencies)
 
 ## Development Guidelines
 - Follow C++ best practices and coding standards
