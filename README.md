@@ -4,8 +4,9 @@
 CryptoLabX is a comprehensive cryptanalysis toolkit developed as part of the Cryptography Laboratory (22CPP307) course. This project aims to build a reusable software framework that will gradually evolve into a complete cryptanalysis platform throughout the semester.
 
 ## Team Members
-- [Add team member names here]
-- Group: XX
+- Bhavya Singhal
+- Vanshika Bhushan
+- Group: 4
 
 ## Project Description
 This toolkit serves as a foundation for cryptographic analysis and experimentation. It is designed with modularity and extensibility in mind, allowing for easy integration of new cryptographic algorithms, attack methods, and analysis tools in future iterations.
@@ -46,42 +47,7 @@ CryptoLabX_GroupXX/
 
 ## Future Modules
 
-### Classical Ciphers (Week 2-4)
-- Caesar Cipher
-- Substitution Cipher
-- Vigenère Cipher
-- Playfair Cipher
-- Rail Fence Cipher
-- Columnar Transposition
 
-### Modern Cryptography (Week 5-8)
-- AES (Advanced Encryption Standard)
-- DES (Data Encryption Standard)
-- RSA (Rivest-Shamir-Adleman)
-- Diffie-Hellman Key Exchange
-- Hash Functions (SHA, MD5)
-
-### Attack Methods (Week 9-12)
-- Brute Force Attack
-- Frequency Analysis
-- Dictionary Attack
-- Known Plaintext Attack
-- Chosen Plaintext Attack
-- Meet-in-the-Middle Attack
-
-### Analysis Tools (Week 13-15)
-- Statistical Analysis
-- Entropy Calculation
-- Pattern Recognition
-- Avalanche Effect Testing
-- Randomness Testing
-
-### Mathematical Utilities
-- Prime Number Generation
-- GCD and Extended Euclidean Algorithm
-- Modular Arithmetic
-- Matrix Operations
-- Polynomial Operations
 
 ## Installation
 
