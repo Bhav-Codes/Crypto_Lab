@@ -129,4 +129,16 @@ This project is developed for educational purposes as part of the Cryptography L
 For questions or contributions, please contact the team members or submit issues through the project repository.
 
 ---
-*Last Updated: July 31, 2026*
+
+
+## Lab 2
+
+* Installed SonarQube using Docker (port 9000)
+Created vulnerable Python app with 8 security flaws 
+Configured sonar-project.properties file
+Ran sonar-scanner successfully
+Analyzed results in SonarQube web interface
+Found vulnerabilities: hard-coded credentials, SQL injection, weak crypto, command injection • Logged entire session with script command
+
+
+*Last Updated: August 07, 2026*
