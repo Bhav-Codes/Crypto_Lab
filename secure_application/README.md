@@ -7,20 +7,20 @@
 
 This is a console-based Library Management System developed for Lab Assignment 3. The application is split into two parts:
 
-### Part 1 (Current Implementation)
+### Part 1 (Complete)
 - **Book Issue/Return**
 - **Member Registration**
 
-### Part 2 (To be completed by team member)
-- **Fine Calculation**
-- **Search Operations** (enhanced)
+### Part 2 (Complete)
+- **Fine Calculation** — ₹5/day overdue fines with payment tracking
+- **Search Operations** — ISBN search and advanced multi-filter search
 
 ## Intentional Vulnerabilities
 
-This application contains **3 intentional security vulnerabilities** for SAST analysis:
+This application contains **intentional security vulnerabilities** for SAST analysis:
 
 1. **SQL Injection**
-   - Location: `register_member()`, `display_member_info()`, `search_book()`
+   - Location: `register_member()`, `display_member_info()`, `search_book()`, `calculate_fine()`, `view_all_fines()`, `pay_fine()`, `search_by_isbn()`, `advanced_search()`
    - User input is directly concatenated into SQL queries without parameterization
    - Can be exploited to manipulate database queries
 
@@ -30,16 +30,22 @@ This application contains **3 intentional security vulnerabilities** for SAST an
    - In a web context, this could execute malicious scripts
 
 3. **Missing Authentication**
-   - Location: `issue_book()`, `return_book()`
+   - Location: `issue_book()`, `return_book()`, `pay_fine()`
    - No verification of user identity or authorization
-   - Anyone can issue or return books without authentication
+   - Anyone can issue, return books, or record fine payments without authentication
+
+4. **Improper Input Validation**
+   - Location: `calculate_fine()`, `pay_fine()`, and all user input handlers
+   - No validation on IDs, amounts, or special characters
+   - Negative payment amounts accepted in fine payment
 
 ⚠️ **WARNING:** This code is for educational purposes only. DO NOT use in production!
 
 ## Technology Stack
 
-- **Language:** Python 3
+- **Language:** C++17
 - **Database:** SQLite3
+- **Build System:** CMake
 - **Development Environment:** Console-based
 
 ## Project Structure
@@ -47,7 +53,8 @@ This application contains **3 intentional security vulnerabilities** for SAST an
 ```
 secure_application/
 ├── src/
-│   └── library_management.py    # Main application code
+│   └── library_management.cpp   # Main application code
+├── CMakeLists.txt                 # Build configuration
 ├── reports/                       # Analysis reports
 ├── screenshots/                   # Application screenshots
 ├── sast/                         # SAST scan results
@@ -59,19 +66,44 @@ secure_application/
 ## Setup Instructions
 
 ### Prerequisites
-- Python 3.7 or higher
-- SQLite3 (usually included with Python)
+- C++17 compiler (GCC, Clang, or MSVC)
+- CMake 3.16 or higher
+- SQLite3 development library
 
-### Installation
+**Windows (vcpkg):**
+```bash
+vcpkg install sqlite3:x64-windows
+cmake -B build -DCMAKE_TOOLCHAIN_FILE=[vcpkg-root]/scripts/buildsystems/vcpkg.cmake
+```
+
+**Linux (Debian/Ubuntu):**
+```bash
+sudo apt install build-essential cmake libsqlite3-dev
+```
+
+**macOS:**
+```bash
+brew install cmake sqlite
+```
+
+### Build and Run
 
 1. Navigate to the secure_application directory:
 ```bash
-cd secure_application/src
+cd secure_application
 ```
 
-2. Run the application:
+2. Configure and build:
 ```bash
-python3 library_management.py
+cmake -B build
+cmake --build build
+```
+
+3. Run the application (from `src/` so `library.db` is created in the right place):
+```bash
+cd src
+../build/library_management      # Linux/macOS
+..\build\Debug\library_management.exe   # Windows (MSVC)
 ```
 
 ## Usage Guide
@@ -79,8 +111,10 @@ python3 library_management.py
 ### Running the Application
 
 ```bash
-cd /Users/bhav/Stuff/crypto_lab/CryptoLabX_GroupXX/secure_application/src
-python3 library_management.py
+cd secure_application
+cmake -B build && cmake --build build
+cd src
+../build/library_management
 ```
 
 ### Features
@@ -116,6 +150,31 @@ python3 library_management.py
 - View all currently issued books
 - Filter by member ID (optional)
 
+#### 8. Calculate Fine for Issue *(Part 2)*
+- Calculate overdue fine for a specific issue ID
+- Fine rate: ₹5 per day (configurable via `FINE_RATE_PER_DAY`)
+- Shows days overdue and total fine amount
+- **Vulnerability Test:** SQL injection via issue ID: `1 OR 1=1`
+
+#### 9. View All Outstanding Fines *(Part 2)*
+- Lists all currently issued books that are overdue
+- Shows member name, book title, days overdue, and fine amount
+- Displays total outstanding fines
+
+#### 10. Search Book by ISBN *(Part 2)*
+- Search for a book using its ISBN
+- Displays complete book information
+- **Vulnerability Test:** SQL injection: `' OR '1'='1`
+
+#### 11. Advanced Book Search *(Part 2)*
+- Search with multiple filters (title, author, availability)
+- **Vulnerability Test:** SQL injection in title filter
+
+#### 12. Pay Fine *(Part 2)*
+- Record fine payments (full or partial)
+- Tracks payment status: unpaid / partial / paid
+- **Vulnerability Test:** Negative payment amount, SQL injection in fine ID
+
 ## Testing Vulnerabilities
 
 ### SQL Injection Examples
@@ -136,6 +195,22 @@ Search: ' OR '1'='1
 **In Member Info:**
 ```
 Member ID: 1 OR 1=1
+```
+
+**In ISBN Search (Part 2):**
+```
+ISBN: ' OR '1'='1
+```
+
+**In Fine Calculation (Part 2):**
+```
+Issue ID: 1 OR 1=1
+```
+
+**In Fine Payment (Part 2):**
+```
+Fine ID: 1; DROP TABLE fines; --
+Amount: -100
 ```
 
 ### XSS Examples
@@ -202,6 +277,21 @@ CREATE TABLE issued_books (
 )
 ```
 
+### Fines Table *(Part 2)*
+```sql
+CREATE TABLE fines (
+    fine_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    issue_id INTEGER,
+    member_id INTEGER,
+    fine_amount REAL,
+    fine_date TEXT,
+    paid_amount REAL DEFAULT 0,
+    status TEXT DEFAULT 'unpaid',
+    FOREIGN KEY (issue_id) REFERENCES issued_books(issue_id),
+    FOREIGN KEY (member_id) REFERENCES members(member_id)
+)
+```
+
 ## Running SAST Analysis
 
 ### Using SonarQube
@@ -227,75 +317,10 @@ sonar-scanner
 
 4. View results at: http://localhost:9000
 
-## For Team Member (Part 2)
-
-### Getting Started
-
-1. Pull the latest changes:
-```bash
-cd /Users/bhav/Stuff/crypto_lab/CryptoLabX_GroupXX
-git pull origin main
-```
-
-2. Navigate to the project:
-```bash
-cd secure_application/src
-```
-
-3. The database file `library.db` will be created automatically when you run the application
-
-### What to Implement
-
-**Fine Calculation Module:**
-- Calculate fines for overdue books
-- Fine rate: ₹5 per day (or configure as needed)
-- Display fine amount for each member
-- Payment tracking
-
-**Enhanced Search Operations:**
-- Search by ISBN
-- Advanced filters (by genre, publication year, etc.)
-- Search history
-- Recommended books feature
-
-### Suggested Function Names
-
-```python
-def calculate_fine(self, issue_id):
-    """Calculate fine for overdue book"""
-    pass
-
-def view_member_fines(self, member_id):
-    """View all fines for a member"""
-    pass
-
-def pay_fine(self, fine_id, amount):
-    """Record fine payment"""
-    pass
-
-def advanced_search(self, filters):
-    """Enhanced search with multiple filters"""
-    pass
-```
-
-### Integration Points
-
-- Use the same `LibraryManagement` class
-- Database is already initialized with all required tables
-- You may need to add a `fines` table for tracking penalties
-- Add your menu options starting from option 9 onwards
-
-### Maintaining Vulnerabilities
-
-Ensure your code also includes vulnerabilities for SAST detection:
-- Continue the SQL injection pattern in new queries
-- Add improper input validation in fine calculation
-- Include directory traversal vulnerability if implementing file operations
-
 ## Contributors
 
 - **Part 1:** Book Issue/Return, Member Registration
-- **Part 2:** Fine Calculation, Search Operations (to be completed)
+- **Part 2:** Fine Calculation, Enhanced Search Operations
 
 ## License
 

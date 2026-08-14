@@ -6,7 +6,7 @@
 Demonstrate SQL injection vulnerability in the `register_member()` function.
 
 ### Steps
-1. Run the application: `python3 library_management.py`
+1. Run the application: `./library_management` (from `src/` after building)
 2. Select option 1 (Register New Member)
 3. Enter the following inputs:
 
@@ -160,23 +160,148 @@ Test improper input validation in various fields.
 
 ---
 
+## Test Case 8: Fine Calculation with Overdue Book
+
+### Objective
+Verify fine calculation for overdue books and demonstrate SQL injection in `calculate_fine()`.
+
+### Steps
+1. Run the application: `./library_management` (from `src/` after building)
+2. Select option 9 (View All Outstanding Fines) to see overdue issues
+3. Select option 8 (Calculate Fine for Issue)
+4. Enter issue ID: `1`
+
+### Expected Result
+- Displays days overdue and fine amount (₹5 × days overdue)
+- Fine record created in `fines` table
+- Sample data: Issue ID 1 should show ~10 days overdue = ₹50 fine
+
+### Severity
+**INFO** - Functional test
+
+---
+
+## Test Case 9: Fine Calculation with Non-Overdue Book
+
+### Objective
+Verify no fine is charged for books not yet overdue.
+
+### Steps
+1. Issue a new book (option 5) with a valid book ID and member ID
+2. Note the new issue ID from option 7 (View Issued Books)
+3. Select option 8 (Calculate Fine for Issue)
+4. Enter the new issue ID
+
+### Expected Result
+- Message: "Book is not overdue"
+- Fine Amount: ₹0
+- Days Overdue: 0
+
+### Severity
+**INFO** - Functional test
+
+---
+
+## Test Case 10: SQL Injection in ISBN Search
+
+### Objective
+Exploit SQL injection in `search_by_isbn()` function.
+
+### Steps
+1. Run the application
+2. Select option 10 (Search Book by ISBN)
+3. Enter ISBN: `' OR '1'='1`
+
+### Expected Result
+- May return unexpected book records or cause SQL errors
+- Demonstrates SQL injection vulnerability in ISBN lookup
+- SAST scanner should flag string concatenation in query
+
+### Severity
+**HIGH** - Can expose entire books database
+
+---
+
+## Test Case 11: SQL Injection in Fine Calculation
+
+### Objective
+Exploit SQL injection in `calculate_fine()` via issue ID.
+
+### Steps
+1. Run the application
+2. Select option 8 (Calculate Fine for Issue)
+3. Enter issue ID: `1 OR 1=1`
+
+### Expected Result
+- Query may return wrong issue record or multiple records
+- Bypasses intended single-issue lookup
+- SAST tool should detect SQL injection
+
+### Severity
+**HIGH** - Unauthorized data access
+
+---
+
+## Test Case 12: Input Validation Bypass in Fine Payment
+
+### Objective
+Demonstrate improper input validation in `pay_fine()`.
+
+### Steps
+1. First run option 8 with issue ID `1` to create a fine record
+2. Select option 12 (Pay Fine)
+3. Enter fine ID: `1`
+4. Enter payment amount: `-100`
+
+### Expected Result
+- Negative payment accepted without validation
+- Paid amount may decrease incorrectly
+- No authentication required to record payment
+- SAST tool should flag input validation and missing auth issues
+
+### Severity
+**MEDIUM** - Financial data manipulation
+
+---
+
+## Test Case 13: SQL Injection in Advanced Search
+
+### Objective
+Exploit SQL injection in `advanced_search()` title filter.
+
+### Steps
+1. Run the application
+2. Select option 11 (Advanced Book Search)
+3. Title: `' OR '1'='1`
+4. Author: *(leave blank)*
+5. Available: *(leave blank)*
+
+### Expected Result
+- Returns all books regardless of title filter
+- SAST scanner should flag SQL injection
+
+### Severity
+**HIGH** - Database exposure
+
+---
+
 ## SAST Tool Expected Findings
 
 When you run SonarQube or any SAST tool on this code, it should detect:
 
 ### Critical Issues
 1. **SQL Injection** (CWE-89)
-   - Lines: register_member(), display_member_info(), search_book()
+   - Lines: register_member(), display_member_info(), search_book(), calculate_fine(), view_all_fines(), pay_fine(), search_by_isbn(), advanced_search()
    - String concatenation in SQL queries
 
 2. **Missing Authentication** (CWE-306)
-   - Lines: issue_book(), return_book()
+   - Lines: issue_book(), return_book(), pay_fine()
    - No user verification before critical operations
 
 ### High Issues
 3. **Improper Input Validation** (CWE-20)
-   - All user input functions
-   - No sanitization or validation
+   - All user input functions, especially calculate_fine() and pay_fine()
+   - No sanitization or validation; negative amounts accepted
 
 ### Medium Issues
 4. **Cross-Site Scripting** (CWE-79)
