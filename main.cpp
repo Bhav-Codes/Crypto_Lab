@@ -1,13 +1,9 @@
-// CryptoLabX - A Cryptanalysis Toolkit
-// Simple and basic C++ implementation
-
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <ctime>
 using namespace std;
 
-// Function to write to log file
 void writeLog(string action) {
     ofstream logFile("outputs/activity.log", ios::app);
     if (logFile.is_open()) {
