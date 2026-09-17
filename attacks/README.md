@@ -45,10 +45,39 @@ make
 
 ---
 
+### 3. Vigenère Cipher Attack
+**Directory**: `vigenere_attack/`
+
+Advanced cryptanalysis of polyalphabetic substitution using:
+- **Kasiski Examination**: Find repeated patterns and distance analysis
+- **Index of Coincidence (IC)**: Statistical method for key length estimation
+- **Frequency Analysis**: Chi-square test on grouped ciphertext
+- **Automated Key Recovery**: Complete key reconstruction
+- **Verification**: Re-encryption validation
+
+**Language**: C++  
+**Status**: ✅ Complete  
+**Features**:
+- All 13 required functions implemented
+- Kasiski examination with pattern detection
+- IC calculation for key length estimation
+- Chi-square based frequency analysis
+- Automatic key recovery and decryption
+- Comprehensive verification system
+- Handles both provided test ciphertexts
+
+**Quick Start**:
+```bash
+cd vigenere_attack/src
+make
+./vigenere_cryptanalysis ../testcases/ciphertext1_odd.txt
+```
+
+---
+
 ## Planned Implementations
 
 Future attack methods to be implemented:
-- Vigenère Cipher Attack (Kasiski examination, Index of Coincidence)
 - Playfair Cipher Attack
 - Hill Cipher Attack (Known-plaintext attack)
 - Transposition Cipher Attack
