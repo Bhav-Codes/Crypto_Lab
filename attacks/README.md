@@ -75,6 +75,26 @@ make
 
 ---
 
+### 4. Padding Oracle Attack (AES-CBC)
+**Directory**: `padding_oracle_attack/`
+
+Recovers the plaintext of an AES-CBC (PKCS#7) ciphertext **without the key**,
+using only a padding-validity oracle:
+- **Byte-by-byte recovery**: right-to-left per block via forged previous block
+- **Intermediate-state solving**: `P = AES_decrypt(C) XOR C_prev`
+- **Query accounting**: reports total oracle queries (~128 per byte)
+
+**Language**: Python (uses `pycryptodome` as the standard AES library)  
+**Status**: ✅ Complete
+
+**Quick Start**:
+```bash
+cd padding_oracle_attack
+python3 src/padding_oracle_attack.py
+```
+
+---
+
 ## Planned Implementations
 
 Future attack methods to be implemented:

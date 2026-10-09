@@ -1,0 +1,6 @@
+[*] Ciphertext length : 64 bytes (4 blocks)
+[*] Starting attack (key is never accessed)...
+
+[+] Recovered plaintext: Padding oracle attacks break AES-CBC without the key!
+[+] Oracle queries used: 8547
+[+] Correct             : True
