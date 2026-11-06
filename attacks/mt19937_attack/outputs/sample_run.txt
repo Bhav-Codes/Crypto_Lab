@@ -1,0 +1,15 @@
+=== Part A: MT19937 stream cipher ===
+Encrypt/decrypt round-trip works: True
+Secret 16-bit seed (hidden from attacker): 31419
+Recovered seed            : 31419
+Recovered plaintext       : b'"|aG:cjAAAAAAAAAAAAAA'
+Seed search space         : 2^16 = 65536
+Match original            : True
+
+=== Part B: predictable reset tokens ===
+Generation timestamp T    : 1793941230
+Token (hex)               : 07fee6e7c88e651a8bb87ab3938dd22e
+Search interval           : [T-300, T+300]
+Timestamps tested         : 301
+Recovered timestamp       : 1793941230
+Regenerated token matches : True

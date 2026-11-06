@@ -1,0 +1,13 @@
+=== Miller-Rabin Prime Generation ===
+
+Assigned bit length         : 512
+Generated prime candidate   : 11912563366823663180422236174644008789085959925101556399129353079637346141933762198596744411890156382537427651624479465910989136832719096758449288281028623
+Actual bit length           : 512
+Number of candidates tested : 13
+Miller-Rabin rounds         : 40
+Total execution time        : 0.0246 s
+
+=== Verification ===
+Bit length == assigned      : True
+Passes Miller-Rabin         : True
+Passes independent Fermat   : True
